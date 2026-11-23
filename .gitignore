@@ -1,0 +1,10 @@
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.iml
+
+# API simulée
+server/node_modules/
