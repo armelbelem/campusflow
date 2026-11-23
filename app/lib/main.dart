@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/theme.dart';
-import 'features/accueil/titre_screen.dart';
+import 'features/taches/presentation/echeances_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class CampusFlowApp extends StatelessWidget {
       title: 'CampusFlow',
       debugShowCheckedModeBanner: false,
       theme: campusTheme(),
-      home: const TitreScreen(),
+      home: const EcheancesScreen(),
     );
   }
 }

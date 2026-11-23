@@ -35,6 +35,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   intl: ^0.20.3
+  # Modèles Task, Course, User écrits à la séance 3.
+  campusflow_models:
+    path: ../campusflow_models
 
 dev_dependencies:
   flutter_test:
