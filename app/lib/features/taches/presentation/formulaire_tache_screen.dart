@@ -87,7 +87,7 @@ class _FormulaireTacheScreenState extends State<FormulaireTacheScreen> {
       messenger.showSnackBar(
         SnackBar(content: Text('Tâche « ${tache.titre} » ajoutée')),
       );
-      navigator.pop();
+      navigator.pop(tache);
     } catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text("La tâche n'a pas pu être enregistrée : $e")),
@@ -125,6 +125,8 @@ class _FormulaireTacheScreenState extends State<FormulaireTacheScreen> {
                 const SizedBox(height: CampusSpacing.m),
                 DropdownButtonFormField<String>(
                   initialValue: _coursId,
+                  // Un intitulé long se coupe au lieu de déborder.
+                  isExpanded: true,
                   decoration: const InputDecoration(labelText: 'Cours'),
                   items: [
                     for (final c in widget.cours)

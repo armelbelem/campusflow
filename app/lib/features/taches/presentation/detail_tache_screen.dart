@@ -3,6 +3,32 @@ import 'package:flutter/material.dart';
 
 import '../../../core/formats.dart';
 import '../../../core/theme.dart';
+import '../data/donnees_demo.dart';
+
+/// Page de la route /taches/:id. « Marquer comme fait » renvoie `true` à
+/// l'écran précédent, qui met sa liste à jour.
+class DetailTachePage extends StatelessWidget {
+  const DetailTachePage({super.key, required this.id, this.initiale});
+
+  final String id;
+  final Task? initiale;
+
+  @override
+  Widget build(BuildContext context) {
+    final tache = initiale ?? tachesDemo().where((t) => t.id == id).firstOrNull;
+    if (tache == null) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: const Center(child: Text('Tâche introuvable.')),
+      );
+    }
+    return DetailTacheScreen(
+      tache: tache,
+      cours: coursDemo.where((c) => c.id == tache.coursId).firstOrNull,
+      onMarquerFait: () => Navigator.of(context).pop(true),
+    );
+  }
+}
 
 /// Écran Détail d'une tâche (téléphone).
 class DetailTacheScreen extends StatelessWidget {

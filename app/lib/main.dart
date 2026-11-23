@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'core/router.dart';
 import 'core/theme.dart';
-import 'features/taches/presentation/echeances_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,12 +14,12 @@ Future<void> main() async {
   runApp(const ProviderScope(child: CampusFlowApp()));
 }
 
-class CampusFlowApp extends StatelessWidget {
+class CampusFlowApp extends ConsumerWidget {
   const CampusFlowApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       title: 'CampusFlow',
       debugShowCheckedModeBanner: false,
       theme: campusTheme(),
@@ -27,7 +27,7 @@ class CampusFlowApp extends StatelessWidget {
       locale: const Locale('fr'),
       supportedLocales: const [Locale('fr'), Locale('en')],
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
-      home: const EcheancesScreen(),
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }

@@ -1,12 +1,13 @@
 import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../data/donnees_demo.dart';
 import 'detail_tache_screen.dart';
-import 'formulaire_tache_screen.dart';
 import 'widgets/liste_taches.dart';
 
-/// Écran Échéances (séance 5) : la liste vit dans l'écran, gérée par setState.
+/// Écran Échéances. La liste vit encore dans l'écran (setState) : le détail
+/// et le formulaire lui renvoient leur résultat par la navigation.
 class EcheancesScreen extends StatefulWidget {
   const EcheancesScreen({super.key});
 
@@ -16,7 +17,6 @@ class EcheancesScreen extends StatefulWidget {
 
 class _EcheancesScreenState extends State<EcheancesScreen> {
   var _taches = tachesDemo();
-  var _onglet = 0;
   String? _idSelectionne;
 
   void _basculer(Task tache) {
@@ -28,37 +28,18 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
     });
   }
 
-  void _ouvrir(Task tache) {
-    final cours = coursDemo.where((c) => c.id == tache.coursId).firstOrNull;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) => DetailTacheScreen(
-          tache: tache,
-          cours: cours,
-          onMarquerFait: () {
-            _basculer(tache);
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-    );
+  Future<void> _ouvrir(Task tache) async {
+    final fait = await context.push<bool>('/taches/${tache.id}', extra: tache);
+    if (fait ?? false) _basculer(tache);
   }
 
-  void _nouvelleTache() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (context) => FormulaireTacheScreen(
-          cours: coursDemo,
-          onEnregistrer: (tache) async {
-            setState(() {
-              _taches = [..._taches, tache]
-                ..sort((a, b) => a.echeance.compareTo(b.echeance));
-            });
-          },
-        ),
-      ),
-    );
+  Future<void> _nouvelleTache() async {
+    final tache = await context.push<Task>('/taches/nouvelle');
+    if (tache == null) return;
+    setState(() {
+      _taches = [..._taches, tache]
+        ..sort((a, b) => a.echeance.compareTo(b.echeance));
+    });
   }
 
   @override
@@ -114,27 +95,6 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
         onPressed: _nouvelleTache,
         tooltip: 'Nouvelle tâche',
         child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _onglet,
-        onDestinationSelected: (i) => setState(() => _onglet = i),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.event_note_outlined),
-            selectedIcon: Icon(Icons.event_note),
-            label: 'Échéances',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.school_outlined),
-            selectedIcon: Icon(Icons.school),
-            label: 'Cours',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
       ),
     );
   }
