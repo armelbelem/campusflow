@@ -25,6 +25,14 @@ class Course {
     salle: lireChamp<String?>(json, 'salle'),
   );
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'intitule': intitule,
+    'enseignant': enseignant,
+    'credits': credits,
+    'salle': salle,
+  };
+
   /// Copie du cours, avec seulement les champs fournis remplacés.
   Course copyWith({
     String? id,

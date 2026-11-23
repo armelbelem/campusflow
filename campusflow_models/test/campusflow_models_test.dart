@@ -31,6 +31,22 @@ void main() {
     expect(tache.description, isNull);
   });
 
+  test('toJson puis fromJson redonne la même tâche (séance 7)', () {
+    final tache = Task(
+      id: 't9',
+      titre: 'Rapport',
+      echeance: DateTime(2026, 11, 27, 17),
+      coursId: 'c1',
+    );
+
+    final copie = Task.fromJson(tache.toJson());
+
+    expect(copie.id, tache.id);
+    expect(copie.echeance, tache.echeance);
+    expect(copie.coursId, 'c1');
+    expect(copie.description, isNull);
+  });
+
   test('fromJson lance une FormatException si un champ manque', () {
     expect(
       () => User.fromJson({'id': 'u1', 'nom': 'Awa'}), // pas d'email

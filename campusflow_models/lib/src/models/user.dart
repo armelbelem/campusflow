@@ -27,6 +27,13 @@ class User {
     ),
   );
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'nom': nom,
+    'email': email,
+    'coursIds': coursIds,
+  };
+
   /// Copie de l'utilisateur, avec seulement les champs fournis remplacés.
   User copyWith({
     String? id,

@@ -28,6 +28,16 @@ class Task {
     coursId: lireChamp<String?>(json, 'coursId'),
   );
 
+  /// Objet vers JSON (séance 7 : envoi au serveur). Date en ISO 8601.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'titre': titre,
+    'echeance': echeance.toIso8601String(),
+    'terminee': terminee,
+    'description': description,
+    'coursId': coursId,
+  };
+
   /// Copie de la tâche, avec seulement les champs fournis remplacés.
   Task copyWith({
     String? id,
