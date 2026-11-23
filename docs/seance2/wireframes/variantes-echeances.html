@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CampusFlow · 3 variantes de l'écran Échéances</title>
+<style>
+:root { --ink: #222; --mid: #8a8a8a; --soft: #d9d9d9; --paper: #fafafa; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 28px 36px; background: #fff; color: var(--ink); font: 13px/1.4 "Segoe UI", Arial, sans-serif; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+.sub { color: #555; margin: 0 0 20px; }
+.row { display: flex; gap: 34px; align-items: flex-start; }
+.cell { width: 290px; }
+.phone { width: 270px; height: 540px; border: 2px solid var(--ink); border-radius: 22px; background: var(--paper); position: relative; overflow: hidden; padding: 14px 12px 0; }
+.chosen .phone { border: 3px solid #000; box-shadow: 0 0 0 4px #bdbdbd; }
+.status { height: 6px; width: 60px; margin: 0 auto 10px; border-radius: 3px; background: var(--soft); }
+.bar { display: flex; align-items: center; height: 34px; border-bottom: 1.5px solid var(--soft); font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+.box { border: 1.5px solid var(--mid); border-radius: 8px; background: #fff; padding: 7px 9px; margin-bottom: 8px; }
+.task { display: flex; gap: 8px; align-items: center; }
+.chk { width: 16px; height: 16px; border: 1.5px solid var(--ink); border-radius: 3px; flex: none; }
+.task small { display: block; color: #666; font-size: 11px; }
+.sect { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #666; margin: 8px 0 5px; }
+.seg { display: flex; border: 1.5px solid var(--mid); border-radius: 18px; overflow: hidden; margin-bottom: 8px; font-size: 11px; }
+.seg span { flex: 1; text-align: center; padding: 5px 0; border-right: 1px solid var(--mid); }
+.seg span:last-child { border-right: 0; }
+.seg span.on { background: #444; color: #fff; }
+.fab { position: absolute; right: 16px; bottom: 66px; width: 46px; height: 46px; border-radius: 14px; background: #444; color: #fff; font-size: 24px; display: flex; align-items: center; justify-content: center; }
+.nav { position: absolute; left: 0; right: 0; bottom: 0; height: 54px; border-top: 1.5px solid var(--soft); display: flex; background: #fff; }
+.nav span { flex: 1; text-align: center; font-size: 11px; padding-top: 8px; color: #666; }
+.nav span::before { content: ""; display: block; width: 18px; height: 18px; border: 1.5px solid var(--mid); border-radius: 4px; margin: 0 auto 3px; }
+.nav span.on { color: var(--ink); font-weight: 700; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-bottom: 8px; }
+.day { border: 1.5px solid var(--mid); border-radius: 5px; height: 62px; font-size: 9.5px; padding: 2px; background: #fff; }
+.day b { display: block; font-size: 10px; }
+.dot { height: 9px; border-radius: 3px; background: #888; margin-top: 3px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.card { border: 1.5px solid var(--mid); border-radius: 8px; background: #fff; height: 96px; padding: 7px; font-size: 12px; }
+.card small { display: block; color: #666; font-size: 10.5px; margin-top: 4px; }
+.btnline { height: 34px; border: 1.5px dashed var(--mid); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #555; margin-top: 4px; }
+.cap { margin-top: 12px; }
+.cap b { display: block; font-size: 14px; }
+.cap ul { margin: 4px 0 0; padding-left: 16px; color: #444; }
+.tag { display: inline-block; background: #222; color: #fff; font-size: 11px; padding: 1px 8px; border-radius: 10px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<h1>CampusFlow · 3 variantes de l'écran Échéances</h1>
+<p class="sub">Même besoin (job story 1 : « voir les rendus de la semaine classés par date »), trois structures. Variantes explorées avec l'aide d'une IA (Claude), choix fait avec la grille du cours.</p>
+<div class="row">
+
+  <div class="cell">
+    <div class="phone">
+      <div class="status"></div>
+      <div class="bar">Échéances</div>
+      <div class="box task"><div class="chk"></div><div>TP Dart<small>Mobile · demain</small></div></div>
+      <div class="box task"><div class="chk"></div><div>Projet Flutter<small>Mobile · ven. 17 h</small></div></div>
+      <div class="box task"><div class="chk"></div><div>Rapport SQL<small>Bases de données · 2 déc.</small></div></div>
+      <div class="box task"><div class="chk"></div><div>Exposé réseaux<small>Réseaux · 9 déc.</small></div></div>
+      <div class="fab">+</div>
+      <div class="nav"><span class="on">Échéances</span><span>Cours</span><span>Profil</span></div>
+    </div>
+    <div class="cap"><b>A · Liste simple</b><ul><li>+ Très simple, très rapide à coder</li><li>− Les tâches faites et en retard sont mélangées</li><li>− Pas de repère « cette semaine »</li></ul></div>
+  </div>
+
+  <div class="cell chosen">
+    <div class="phone">
+      <div class="status"></div>
+      <div class="bar">Échéances</div>
+      <div class="seg"><span class="on">À faire (3)</span><span>Faites</span><span>En retard</span></div>
+      <p class="sect">Cette semaine</p>
+      <div class="box task"><div class="chk"></div><div>TP Dart<small>Mobile · demain</small></div></div>
+      <div class="box task"><div class="chk"></div><div>Projet Flutter<small>Mobile · ven. 17 h</small></div></div>
+      <p class="sect">Plus tard</p>
+      <div class="box task"><div class="chk"></div><div>Rapport SQL<small>Bases de données · 2 déc.</small></div></div>
+      <div class="fab">+</div>
+      <div class="nav"><span class="on">Échéances</span><span>Cours</span><span>Profil</span></div>
+    </div>
+    <div class="cap"><b>B · Liste filtrée et groupée <span class="tag">Retenue</span></b><ul><li>+ Filtres à faire, faites, en retard</li><li>+ Repère « cette semaine »</li><li>− Un peu plus de code (filtres)</li></ul></div>
+  </div>
+
+  <div class="cell">
+    <div class="phone">
+      <div class="status"></div>
+      <div class="bar">Semaine du 24 nov.</div>
+      <div class="week">
+        <div class="day"><b>L</b><div class="dot"></div></div><div class="day"><b>M</b></div><div class="day"><b>M</b><div class="dot"></div></div><div class="day"><b>J</b></div><div class="day"><b>V</b><div class="dot"></div><div class="dot"></div></div><div class="day"><b>S</b></div><div class="day"><b>D</b></div>
+      </div>
+      <div class="grid2">
+        <div class="card">TP Dart<small>Mobile · lun.</small></div>
+        <div class="card">Projet Flutter<small>Mobile · ven.</small></div>
+        <div class="card">Rapport SQL<small>BD · ven.</small></div>
+        <div class="card">Exposé<small>Réseaux · 9 déc.</small></div>
+      </div>
+      <div class="btnline">+ Ajouter</div>
+      <div class="nav"><span class="on">Échéances</span><span>Cours</span><span>Profil</span></div>
+    </div>
+    <div class="cap"><b>C · Semaine en calendrier</b><ul><li>+ Vue visuelle de la semaine</li><li>− Cases trop petites (texte agrandi, cibles 48 dp)</li><li>− Bouton d'ajout loin du pouce</li></ul></div>
+  </div>
+
+</div>
+</body>
+</html>
