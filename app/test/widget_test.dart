@@ -32,4 +32,17 @@ void main() {
     await tester.pump();
     expect(find.text('En retard'), findsNothing);
   });
+
+  testWidgets('Détail : « Marquer comme fait » coche la tâche', (tester) async {
+    await tester.pumpWidget(const CampusFlowApp());
+
+    await tester.tap(find.text('Exposé sur le routage IP'));
+    await tester.pumpAndSettle();
+    expect(find.text('Marquer comme fait'), findsOneWidget);
+
+    await tester.tap(find.text('Marquer comme fait'));
+    await tester.pumpAndSettle();
+    final cases = tester.widgetList<Checkbox>(find.byType(Checkbox));
+    expect(cases.last.value, isTrue);
+  });
 }

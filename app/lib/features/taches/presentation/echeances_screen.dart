@@ -2,6 +2,7 @@ import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
 
 import '../data/donnees_demo.dart';
+import 'detail_tache_screen.dart';
 import 'widgets/liste_taches.dart';
 
 /// Écran Échéances (séance 5) : la liste vit dans l'écran, gérée par setState.
@@ -25,6 +26,22 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
     });
   }
 
+  void _ouvrir(Task tache) {
+    final cours = coursDemo.where((c) => c.id == tache.coursId).firstOrNull;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => DetailTacheScreen(
+          tache: tache,
+          cours: cours,
+          onMarquerFait: () {
+            _basculer(tache);
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
+  }
+
   void _bientot(String quoi) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text('$quoi : bientôt disponible')));
@@ -38,7 +55,7 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
         taches: _taches,
         cours: coursDemo,
         onBasculer: _basculer,
-        onOuvrir: (t) => _bientot('Détail'),
+        onOuvrir: _ouvrir,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _bientot('Nouvelle tâche'),
