@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CampusFlow · Design system v1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=block">
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; padding: 30px 40px; background: #fff; color: #1B1C1F; font: 14px/1.45 Roboto, "Segoe UI", Arial, sans-serif; width: 1240px; }
+h1 { font-size: 26px; margin: 0 0 2px; }
+.sub { color: #5B5E66; margin: 0 0 18px; }
+h2 { font-size: 17px; margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid #1B1C1F; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.sw { border: 1px solid #DAD7D1; border-radius: 10px; overflow: hidden; }
+.sw .chip { height: 64px; display: flex; align-items: flex-end; padding: 6px 8px; font-weight: 600; }
+.sw .meta { padding: 6px 8px; font-size: 12px; }
+.sw .meta b { display: block; font-size: 13px; }
+.ok { color: #1D7348; font-weight: 700; }
+.ko { color: #B3261E; font-weight: 700; }
+.type div { display: flex; align-items: baseline; gap: 14px; padding: 5px 0; border-bottom: 1px solid #ECEAE6; }
+.type span.k { width: 150px; color: #5B5E66; font-size: 12px; flex: none; }
+.tokens { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tokens td, .tokens th { text-align: left; padding: 5px 8px; border-bottom: 1px solid #ECEAE6; }
+.tokens th { color: #5B5E66; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.comp { display: grid; grid-template-columns: 1fr 1.3fr 1.2fr; gap: 20px; }
+.panel { border: 1px solid #DAD7D1; border-radius: 12px; padding: 14px; background: #F7F6F3; }
+.panel h3 { margin: 0 0 10px; font-size: 14px; }
+.panel p.n { font-size: 12px; color: #5B5E66; margin: 8px 0 0; }
+.fbtn { height: 48px; border-radius: 12px; background: #C4260E; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.fbtn.dis { background: #E3E1DD; color: #8B8E95; }
+.tbtn { height: 48px; border-radius: 12px; color: #C4260E; font-weight: 600; display: flex; align-items: center; justify-content: center; border: 1px solid #DAD7D1; background: #fff; }
+.card { background: #fff; border-radius: 12px; border: 1px solid #DAD7D1; padding: 10px 12px; display: flex; gap: 12px; align-items: center; margin-bottom: 8px; min-height: 64px; }
+.box { width: 20px; height: 20px; border: 2px solid #5B5E66; border-radius: 4px; flex: none; }
+.box.on { background: #C4260E; border-color: #C4260E; }
+.card .t { font-weight: 600; }
+.card .s { font-size: 12.5px; color: #5B5E66; }
+.badge { margin-left: auto; font-size: 11px; font-weight: 700; color: #B3261E; border: 1.5px solid #B3261E; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.done .t { text-decoration: line-through; color: #5B5E66; }
+.field { position: relative; border: 1.5px solid #5B5E66; border-radius: 8px; height: 52px; background: #fff; padding: 14px 12px 0; margin: 10px 0 4px; }
+.field label { position: absolute; top: -9px; left: 10px; background: #F7F6F3; padding: 0 4px; font-size: 12px; color: #5B5E66; }
+.field.focus { border: 2px solid #C4260E; }
+.field.focus label { color: #C4260E; }
+.field.err { border: 2px solid #B3261E; }
+.field.err label { color: #B3261E; }
+.help { font-size: 12px; color: #B3261E; margin: 0 0 6px 12px; }
+.sizes { display: grid; grid-template-columns: 0.7fr 1fr 1.6fr; gap: 16px; align-items: end; }
+.dev { border: 2px solid #1B1C1F; border-radius: 14px; padding: 8px; background: #F7F6F3; display: flex; gap: 6px; }
+.dev .pane { background: #fff; border: 1px dashed #8B8E95; border-radius: 6px; flex: 1; font-size: 11px; color: #5B5E66; display: flex; align-items: center; justify-content: center; text-align: center; }
+.dev .rail { width: 26px; flex: none; background: #fff; border: 1px dashed #8B8E95; border-radius: 6px; }
+.size-cap { margin-top: 6px; font-size: 12.5px; }
+.size-cap b { display: block; font-size: 13.5px; }
+</style>
+</head>
+<body>
+<h1>CampusFlow · Design system v1</h1>
+<p class="sub">Page de référence traduite en <code>ThemeData</code> à la séance 4. Contrastes calculés selon WCAG 2.2 (seuil AA pour le texte : 4,5:1). Auteur : Belem Armel.</p>
+
+<h2>1. Couleurs</h2>
+<div class="swatches">
+  <div class="sw"><div class="chip" style="background:#C4260E;color:#fff">Aa</div><div class="meta"><b>Primaire · #C4260E</b>Boutons, éléments actifs<br>Texte blanc : 5,78:1 <span class="ok">AA ✓</span></div></div>
+  <div class="sw"><div class="chip" style="background:#EC3013;color:#fff">Aa</div><div class="meta"><b>Rouge d'origine · #EC3013</b>Seed du cours, décor seulement<br>Texte blanc : 4,20:1 <span class="ko">✗ refusé</span></div></div>
+  <div class="sw"><div class="chip" style="background:#1B1C1F;color:#fff">Aa</div><div class="meta"><b>Texte · #1B1C1F</b>Titres et texte courant<br>Sur fond blanc : 17,04:1 <span class="ok">AA ✓</span></div></div>
+  <div class="sw"><div class="chip" style="background:#5B5E66;color:#fff">Aa</div><div class="meta"><b>Texte secondaire · #5B5E66</b>Sous-titres, dates<br>Sur blanc : 6,49:1 · sur surface : 6,00:1 <span class="ok">✓</span></div></div>
+  <div class="sw"><div class="chip" style="background:#FFFFFF;color:#1B1C1F;border-bottom:1px solid #DAD7D1">Aa</div><div class="meta"><b>Fond · #FFFFFF</b>Fond des écrans</div></div>
+  <div class="sw"><div class="chip" style="background:#F7F6F3;color:#1B1C1F">Aa</div><div class="meta"><b>Surface · #F7F6F3</b>Cartes, zones groupées<br>Texte : 15,77:1 <span class="ok">AA ✓</span></div></div>
+  <div class="sw"><div class="chip" style="background:#1D7348;color:#fff">Aa</div><div class="meta"><b>Succès · #1D7348</b>Tâche faite, confirmation<br>Sur blanc : 5,84:1 <span class="ok">AA ✓</span></div></div>
+  <div class="sw"><div class="chip" style="background:#B3261E;color:#fff">Aa</div><div class="meta"><b>Retard / erreur · #B3261E</b>Badge « En retard », erreurs<br>Sur blanc : 6,54:1 <span class="ok">AA ✓</span></div></div>
+</div>
+<p style="font-size:12.5px;color:#5B5E66;margin:8px 0 0">Décision : le rouge #EC3013 du cours ne passe pas le seuil de 4,5:1 avec un texte blanc. On utilise donc une version plus foncée, #C4260E, pour tout ce qui porte du texte.</p>
+
+<div class="cols">
+  <div>
+    <h2>2. Typographie · Roboto (police Material)</h2>
+    <div class="type">
+      <div><span class="k">titleLarge · 22 / 600</span><span style="font-size:22px;font-weight:600">Échéances</span></div>
+      <div><span class="k">titleMedium · 16 / 600</span><span style="font-size:16px;font-weight:600">Projet Flutter</span></div>
+      <div><span class="k">bodyLarge · 16 / 400</span><span style="font-size:16px">Texte courant d'une description</span></div>
+      <div><span class="k">bodyMedium · 14 / 400</span><span style="font-size:14px;color:#5B5E66">Programmation mobile · ven. 17 h</span></div>
+      <div><span class="k">labelLarge · 14 / 600</span><span style="font-size:14px;font-weight:600">MARQUER COMME FAIT</span></div>
+    </div>
+  </div>
+  <div>
+    <h2>3. Espacements, arrondis, cibles</h2>
+    <table class="tokens">
+      <tr><th>Token</th><th>Valeur</th><th>Usage</th></tr>
+      <tr><td>espace.s / m / l / xl</td><td>8 / 16 / 24 / 32 dp</td><td>Marges internes et entre blocs</td></tr>
+      <tr><td>arrondi.carte</td><td>12 dp</td><td>Cartes, boutons</td></tr>
+      <tr><td>arrondi.champ</td><td>8 dp</td><td>Champs de saisie</td></tr>
+      <tr><td>cible.min</td><td>48 dp</td><td>Hauteur minimale de toute zone cliquable</td></tr>
+      <tr><td>texte</td><td>jusqu'à 200 %</td><td>Pas de hauteur fixe sur les blocs de texte</td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>4. Trois composants</h2>
+<div class="comp">
+  <div class="panel"><h3>Bouton principal (FilledButton)</h3>
+    <div class="fbtn">Marquer comme fait</div>
+    <div class="fbtn dis">Désactivé</div>
+    <div class="tbtn">Annuler (TextButton)</div>
+    <p class="n">Hauteur 48 dp, arrondi 12, texte blanc sur #C4260E (5,78:1).</p></div>
+  <div class="panel"><h3>Carte de tâche (Card + ListTile)</h3>
+    <div class="card"><div class="box"></div><div><div class="t">Projet Flutter</div><div class="s">Programmation mobile · ven. 28 nov.</div></div></div>
+    <div class="card"><div class="box"></div><div><div class="t">Rapport SQL</div><div class="s">Bases de données · 20 nov.</div></div><span class="badge">En retard</span></div>
+    <div class="card done"><div class="box on"></div><div><div class="t">TP Dart</div><div class="s">Programmation mobile · fait</div></div></div>
+    <p class="n">Toute la carte est cliquable (≥ 48 dp) ; la case coche ou décoche.</p></div>
+  <div class="panel"><h3>Champ de saisie (TextFormField)</h3>
+    <div class="field"><label>Titre *</label></div>
+    <div class="field focus"><label>Titre *</label>TP Dart</div>
+    <div class="field err"><label>Titre *</label></div>
+    <p class="help">Le titre est obligatoire</p>
+    <p class="n">États : normal, focus (primaire), erreur (#B3261E) avec message sous le champ.</p></div>
+</div>
+
+<h2>5. Tailles de fenêtre visées</h2>
+<div class="sizes">
+  <div><div class="dev" style="height:200px;width:110px"><div class="pane">Liste</div></div><div class="size-cap"><b>Compact · moins de 600 dp</b>Téléphone (référence 360 × 800). Une colonne, barre de navigation en bas.</div></div>
+  <div><div class="dev" style="height:200px"><div class="rail"></div><div class="pane">Liste</div></div><div class="size-cap"><b>Moyen · 600 à 839 dp</b>Petite tablette, pliable. Rail de navigation, une colonne.</div></div>
+  <div><div class="dev" style="height:200px"><div class="rail"></div><div class="pane" style="flex:2">Liste</div><div class="pane" style="flex:3">Détail</div></div><div class="size-cap"><b>Étendu · 840 dp et plus</b>Tablette, paysage. Liste et détail côte à côte (LayoutBuilder).</div></div>
+</div>
+</body>
+</html>
