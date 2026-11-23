@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/theme.dart';
 import 'features/accueil/titre_screen.dart';
 
-void main() => runApp(const CampusFlowApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Noms des jours et des mois en français pour DateFormat.
+  await initializeDateFormatting('fr_FR');
+  runApp(const CampusFlowApp());
+}
 
 class CampusFlowApp extends StatelessWidget {
   const CampusFlowApp({super.key});

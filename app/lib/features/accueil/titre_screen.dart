@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/theme.dart';
 
@@ -9,6 +10,10 @@ class TitreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final aujourdhui = DateFormat(
+      'EEEE d MMMM',
+      'fr_FR',
+    ).format(DateTime.now());
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -17,10 +22,10 @@ class TitreScreen extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.event_available,
-                  size: 96,
-                  color: theme.colorScheme.primary,
+                Image.asset(
+                  'assets/images/logo.png',
+                  width: 120,
+                  semanticLabel: 'Logo CampusFlow',
                 ),
                 const SizedBox(height: CampusSpacing.m),
                 Text('CampusFlow', style: theme.textTheme.headlineMedium),
@@ -30,6 +35,11 @@ class TitreScreen extends StatelessWidget {
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
+                ),
+                const SizedBox(height: CampusSpacing.l),
+                Text(
+                  'Nous sommes le $aujourdhui',
+                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),
