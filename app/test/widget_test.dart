@@ -66,4 +66,21 @@ void main() {
     expect(find.text('Tâche « Fiche de lecture » ajoutée'), findsOneWidget);
     expect(find.text('Fiche de lecture'), findsOneWidget);
   });
+
+  testWidgets('Tablette (≥ 840 dp) : liste et détail côte à côte', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(const CampusFlowApp());
+    expect(find.text('Sélectionnez une tâche dans la liste.'), findsOneWidget);
+
+    await tester.tap(find.text('Rapport SQL'));
+    await tester.pumpAndSettle();
+    // Le détail s'affiche à droite, sans changer d'écran.
+    expect(find.text('Marquer comme fait'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
+  });
 }
