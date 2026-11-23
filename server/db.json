@@ -1,0 +1,75 @@
+{
+  "taches": [
+    {
+      "id": "t1",
+      "titre": "TP Dart : modèles et tests",
+      "echeance": "2026-11-24T18:00:00",
+      "terminee": false,
+      "description": "Task, Course, User avec fromJson et trois tests.",
+      "coursId": "c1"
+    },
+    {
+      "id": "t2",
+      "titre": "Projet Flutter : les trois écrans",
+      "echeance": "2026-11-27T17:00:00",
+      "terminee": false,
+      "description": null,
+      "coursId": "c1"
+    },
+    {
+      "id": "t3",
+      "titre": "Rapport SQL",
+      "echeance": "2026-11-21T23:00:00",
+      "terminee": false,
+      "description": "Modèle relationnel et requêtes de la base Scolarité.",
+      "coursId": "c2"
+    },
+    {
+      "id": "t4",
+      "titre": "Exposé sur le routage IP",
+      "echeance": "2026-12-02T10:00:00",
+      "terminee": false,
+      "description": null,
+      "coursId": "c3"
+    },
+    {
+      "id": "t5",
+      "titre": "QCM séances 1, 2 et 4",
+      "echeance": "2026-11-18T10:00:00",
+      "terminee": true,
+      "description": null,
+      "coursId": "c1"
+    }
+  ],
+  "cours": [
+    {
+      "id": "c1",
+      "intitule": "Programmation mobile",
+      "enseignant": "M. Compaoré",
+      "credits": 4,
+      "salle": "B12"
+    },
+    {
+      "id": "c2",
+      "intitule": "Bases de données",
+      "enseignant": "Mme Kaboré",
+      "credits": 3,
+      "salle": null
+    },
+    {
+      "id": "c3",
+      "intitule": "Réseaux",
+      "enseignant": "M. Ouédraogo",
+      "credits": 3,
+      "salle": "A04"
+    }
+  ],
+  "utilisateurs": [
+    {
+      "id": "u1",
+      "nom": "Ibrahim Sawadogo",
+      "email": "ibrahim.sawadogo@campus.bf",
+      "coursIds": ["c1", "c2", "c3"]
+    }
+  ]
+}
