@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/theme.dart';
@@ -9,7 +10,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Noms des jours et des mois en français pour DateFormat.
   await initializeDateFormatting('fr_FR');
-  runApp(const CampusFlowApp());
+  // ProviderScope stocke l'état de tous les fournisseurs Riverpod.
+  runApp(const ProviderScope(child: CampusFlowApp()));
 }
 
 class CampusFlowApp extends StatelessWidget {

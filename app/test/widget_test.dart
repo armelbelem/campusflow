@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -20,7 +21,7 @@ void main() {
   testWidgets('Échéances : liste, case à cocher et barre de navigation', (
     tester,
   ) async {
-    await tester.pumpWidget(const CampusFlowApp());
+    await tester.pumpWidget(const ProviderScope(child: CampusFlowApp()));
 
     expect(find.text('Échéances'), findsWidgets);
     expect(find.text('Rapport SQL'), findsOneWidget);
@@ -34,7 +35,7 @@ void main() {
   });
 
   testWidgets('Détail : « Marquer comme fait » coche la tâche', (tester) async {
-    await tester.pumpWidget(const CampusFlowApp());
+    await tester.pumpWidget(const ProviderScope(child: CampusFlowApp()));
 
     await tester.tap(find.text('Exposé sur le routage IP'));
     await tester.pumpAndSettle();
@@ -49,7 +50,7 @@ void main() {
   testWidgets('Formulaire : titre obligatoire, puis ajout et SnackBar', (
     tester,
   ) async {
-    await tester.pumpWidget(const CampusFlowApp());
+    await tester.pumpWidget(const ProviderScope(child: CampusFlowApp()));
 
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
@@ -74,7 +75,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(const CampusFlowApp());
+    await tester.pumpWidget(const ProviderScope(child: CampusFlowApp()));
     expect(find.text('Sélectionnez une tâche dans la liste.'), findsOneWidget);
 
     await tester.tap(find.text('Rapport SQL'));
