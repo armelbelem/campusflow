@@ -1,17 +1,11 @@
-# campusflow
+# CampusFlow · application Flutter
 
-CampusFlow : suivi des cours, échéances et tâches d'un étudiant.
+Application des séances 4 à 7. Voir le [README du dépôt](../README.md) pour la présentation complète.
 
-## Getting Started
+```bash
+flutter pub get
+flutter run          # lancer d'abord l'API : cd ../server && npm run api:auth
+flutter test         # 20 tests, sans réseau
+```
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Compte de démonstration : `ibrahim.sawadogo@campus.bf` / `campus2026`.
