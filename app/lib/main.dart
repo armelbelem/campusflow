@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'core/theme.dart';
@@ -20,6 +21,10 @@ class CampusFlowApp extends StatelessWidget {
       title: 'CampusFlow',
       debugShowCheckedModeBanner: false,
       theme: campusTheme(),
+      // Interface en français, y compris le calendrier de choix de date.
+      locale: const Locale('fr'),
+      supportedLocales: const [Locale('fr'), Locale('en')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
       home: const EcheancesScreen(),
     );
   }

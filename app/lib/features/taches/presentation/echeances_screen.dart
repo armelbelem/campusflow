@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../data/donnees_demo.dart';
 import 'detail_tache_screen.dart';
+import 'formulaire_tache_screen.dart';
 import 'widgets/liste_taches.dart';
 
 /// Écran Échéances (séance 5) : la liste vit dans l'écran, gérée par setState.
@@ -42,9 +43,21 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
     );
   }
 
-  void _bientot(String quoi) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('$quoi : bientôt disponible')));
+  void _nouvelleTache() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => FormulaireTacheScreen(
+          cours: coursDemo,
+          onEnregistrer: (tache) async {
+            setState(() {
+              _taches = [..._taches, tache]
+                ..sort((a, b) => a.echeance.compareTo(b.echeance));
+            });
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -58,7 +71,7 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
         onOuvrir: _ouvrir,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _bientot('Nouvelle tâche'),
+        onPressed: _nouvelleTache,
         tooltip: 'Nouvelle tâche',
         child: const Icon(Icons.add),
       ),

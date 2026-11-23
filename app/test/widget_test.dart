@@ -45,4 +45,25 @@ void main() {
     final cases = tester.widgetList<Checkbox>(find.byType(Checkbox));
     expect(cases.last.value, isTrue);
   });
+
+  testWidgets('Formulaire : titre obligatoire, puis ajout et SnackBar', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const CampusFlowApp());
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Enregistrer'));
+    await tester.pump();
+    expect(find.text('Le titre est obligatoire'), findsOneWidget);
+
+    await tester.enterText(
+      find.byType(TextFormField).first,
+      'Fiche de lecture',
+    );
+    await tester.tap(find.text('Enregistrer'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tâche « Fiche de lecture » ajoutée'), findsOneWidget);
+    expect(find.text('Fiche de lecture'), findsOneWidget);
+  });
 }

@@ -38,6 +38,8 @@ dependencies:
   # Modèles Task, Course, User écrits à la séance 3.
   campusflow_models:
     path: ../campusflow_models
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
