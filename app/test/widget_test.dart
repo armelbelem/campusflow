@@ -5,6 +5,9 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:campusflow/core/router.dart';
 import 'package:campusflow/features/accueil/titre_screen.dart';
+import 'package:campusflow/features/cours/data/api_cours_repository.dart';
+import 'package:campusflow/features/taches/data/api_task_repository.dart';
+import 'package:campusflow/features/taches/data/fake_task_repository.dart';
 import 'package:campusflow/main.dart';
 
 /// Simule un téléphone de 360 × 780 dp.
@@ -14,8 +17,18 @@ void telephone(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
-Future<ProviderContainer> lancer(WidgetTester tester) async {
-  final container = ProviderContainer();
+/// Lance l'application avec des repositories en mémoire : aucun réseau.
+Future<ProviderContainer> lancer(
+  WidgetTester tester, {
+  FakeTaskRepository? taches,
+}) async {
+  final container = ProviderContainer(
+    overrides: [
+      taskRepositoryProvider.overrideWithValue(taches ?? FakeTaskRepository()),
+      coursRepositoryProvider.overrideWithValue(FakeCoursRepository()),
+    ],
+    retry: (_, _) => null,
+  );
   addTearDown(container.dispose);
   await tester.pumpWidget(
     UncontrolledProviderScope(
@@ -54,6 +67,22 @@ void main() {
     await tester.pump();
     expect(find.text('Rapport SQL'), findsNothing);
     expect(find.text('En retard'), findsNothing);
+  });
+
+  testWidgets('Serveur en panne : message, puis Réessayer recharge la liste', (
+    tester,
+  ) async {
+    telephone(tester);
+    final repo = FakeTaskRepository(echec: true);
+    await lancer(tester, taches: repo);
+
+    expect(find.text('Serveur injoignable (simulation).'), findsOneWidget);
+    expect(find.text('Rapport SQL'), findsNothing);
+
+    repo.echec = false;
+    await tester.tap(find.text('Réessayer'));
+    await tester.pumpAndSettle();
+    expect(find.text('Rapport SQL'), findsOneWidget);
   });
 
   testWidgets('Filtres : à faire, faites, en retard', (tester) async {

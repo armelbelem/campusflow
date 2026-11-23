@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/formats.dart';
 import '../../../core/theme.dart';
+import '../../../core/widgets/message_erreur.dart';
 import '../application/taches_notifier.dart';
 
 /// Page de la route /taches/:id : elle lit la tâche dans l'état partagé,
@@ -16,29 +17,40 @@ class DetailTachePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tache = ref
+    Widget simple(Widget corps) => Scaffold(appBar: AppBar(), body: corps);
+
+    return ref
         .watch(tachesProvider)
-        .where((t) => t.id == id)
-        .firstOrNull;
-    if (tache == null) {
-      return Scaffold(
-        appBar: AppBar(),
-        body: const Center(child: Text('Tâche introuvable.')),
-      );
-    }
-    final cours = ref
-        .watch(coursProvider)
-        .where((c) => c.id == tache.coursId)
-        .firstOrNull;
-    return DetailTacheScreen(
-      tache: tache,
-      cours: cours,
-      onMarquerFait: () => ref.read(tachesProvider.notifier).basculer(id),
-      onSupprimer: () {
-        ref.read(tachesProvider.notifier).supprimer(id);
-        context.pop();
-      },
-    );
+        .when(
+          loading: () =>
+              simple(const Center(child: CircularProgressIndicator())),
+          error: (erreur, _) => simple(
+            MessageErreur(
+              message: '$erreur',
+              onReessayer: () => ref.invalidate(tachesProvider),
+            ),
+          ),
+          data: (taches) {
+            final tache = taches.where((t) => t.id == id).firstOrNull;
+            if (tache == null) {
+              return simple(const Center(child: Text('Tâche introuvable.')));
+            }
+            final cours = (ref.watch(coursProvider).value ?? const [])
+                .where((c) => c.id == tache.coursId)
+                .firstOrNull;
+            final notifier = ref.read(tachesProvider.notifier);
+            return DetailTacheScreen(
+              tache: tache,
+              cours: cours,
+              onMarquerFait: () =>
+                  avecMessageErreur(context, () => notifier.basculer(tache)),
+              onSupprimer: () => avecMessageErreur(context, () async {
+                await notifier.supprimer(id);
+                if (context.mounted) context.pop();
+              }),
+            );
+          },
+        );
   }
 }
 

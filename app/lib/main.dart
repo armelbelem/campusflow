@@ -11,7 +11,9 @@ Future<void> main() async {
   // Noms des jours et des mois en français pour DateFormat.
   await initializeDateFormatting('fr_FR');
   // ProviderScope stocke l'état de tous les fournisseurs Riverpod.
-  runApp(const ProviderScope(child: CampusFlowApp()));
+  // Pas de nouvel essai automatique : l'erreur s'affiche avec un bouton
+  // Réessayer, et c'est l'utilisateur qui relance.
+  runApp(ProviderScope(retry: (_, _) => null, child: const CampusFlowApp()));
 }
 
 class CampusFlowApp extends ConsumerWidget {

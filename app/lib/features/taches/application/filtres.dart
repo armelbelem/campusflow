@@ -32,13 +32,16 @@ final filtreProvider = NotifierProvider<FiltreNotifier, Filtre>(
 );
 
 /// Fournisseur dérivé : recalculé dès que les tâches ou le filtre changent.
-final tachesFiltreesProvider = Provider<List<Task>>((ref) {
+/// Il garde les trois états (chargement, erreur, données) des tâches.
+final tachesFiltreesProvider = Provider<AsyncValue<List<Task>>>((ref) {
   final filtre = ref.watch(filtreProvider);
-  return ref.watch(tachesProvider).where(filtre.garde).toList();
+  return ref
+      .watch(tachesProvider)
+      .whenData((taches) => taches.where(filtre.garde).toList());
 });
 
 /// Nombre de tâches dans chaque filtre, pour les libellés des boutons.
 final compteursProvider = Provider<Map<Filtre, int>>((ref) {
-  final taches = ref.watch(tachesProvider);
+  final taches = ref.watch(tachesProvider).value ?? const <Task>[];
   return {for (final f in Filtre.values) f: taches.where(f.garde).length};
 });

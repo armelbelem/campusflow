@@ -13,8 +13,8 @@ class NouvelleTachePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FormulaireTacheScreen(
-      cours: ref.watch(coursProvider),
-      onEnregistrer: (tache) async =>
+      cours: ref.watch(coursProvider).value ?? const [],
+      onEnregistrer: (tache) =>
           ref.read(tachesProvider.notifier).ajouter(tache),
     );
   }

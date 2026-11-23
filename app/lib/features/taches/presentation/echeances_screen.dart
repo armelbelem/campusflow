@@ -4,13 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme.dart';
+import '../../../core/widgets/message_erreur.dart';
 import '../application/filtres.dart';
 import '../application/taches_notifier.dart';
 import 'detail_tache_screen.dart';
 import 'widgets/liste_taches.dart';
 
 /// Écran Échéances, branché sur l'état partagé : une tâche cochée ou ajoutée
-/// ailleurs apparaît ici immédiatement.
+/// ailleurs apparaît ici immédiatement. Les trois états de AsyncValue sont
+/// traités : chargement, erreur avec Réessayer, données.
 class EcheancesScreen extends ConsumerStatefulWidget {
   const EcheancesScreen({super.key});
 
@@ -21,22 +23,36 @@ class EcheancesScreen extends ConsumerStatefulWidget {
 class _EcheancesScreenState extends ConsumerState<EcheancesScreen> {
   String? _idSelectionne;
 
-  void _basculer(Task tache) =>
-      ref.read(tachesProvider.notifier).basculer(tache.id);
+  Future<void> _basculer(Task tache) => avecMessageErreur(
+    context,
+    () => ref.read(tachesProvider.notifier).basculer(tache),
+  );
 
   @override
   Widget build(BuildContext context) {
     // watch dans build : l'écran se reconstruit à chaque changement.
-    final toutes = ref.watch(tachesProvider);
-    final taches = ref.watch(tachesFiltreesProvider);
-    final cours = ref.watch(coursProvider);
+    final etat = ref.watch(tachesFiltreesProvider);
+    final toutes = ref.watch(tachesProvider).value ?? const <Task>[];
+    final cours = ref.watch(coursProvider).value ?? const <Course>[];
 
     return Scaffold(
       appBar: AppBar(title: const Text('Échéances')),
       body: Column(
         children: [
           const _BarreFiltres(),
-          Expanded(child: _corps(toutes, taches, cours)),
+          Expanded(
+            child: etat.when(
+              data: (taches) => RefreshIndicator(
+                onRefresh: () => ref.refresh(tachesProvider.future),
+                child: _corps(toutes, taches, cours),
+              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (erreur, _) => MessageErreur(
+                message: '$erreur',
+                onReessayer: () => ref.invalidate(tachesProvider),
+              ),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -90,12 +106,12 @@ class _EcheancesScreenState extends ConsumerState<EcheancesScreen> {
                           .where((c) => c.id == selection.coursId)
                           .firstOrNull,
                       onMarquerFait: () => _basculer(selection),
-                      onSupprimer: () {
-                        ref
+                      onSupprimer: () => avecMessageErreur(context, () async {
+                        await ref
                             .read(tachesProvider.notifier)
                             .supprimer(selection.id);
-                        setState(() => _idSelectionne = null);
-                      },
+                        if (mounted) setState(() => _idSelectionne = null);
+                      }),
                     ),
             ),
           ],
