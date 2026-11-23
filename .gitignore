@@ -8,3 +8,6 @@ desktop.ini
 
 # API simulée
 server/node_modules/
+
+# Cache de compilation Kotlin (Android)
+app/android/.kotlin/
