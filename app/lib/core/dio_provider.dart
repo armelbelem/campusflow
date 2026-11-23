@@ -2,6 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../features/auth/application/auth_notifier.dart';
+import 'session_storage.dart';
+
 /// Adresse de l'API. Sur l'émulateur Android, la machine hôte s'appelle
 /// 10.0.2.2 et non localhost. On peut forcer une autre adresse avec
 /// `flutter run --dart-define=API_URL=http://192.168.1.10:3000`.
@@ -16,7 +19,7 @@ String urlApi() {
 
 /// Le client HTTP, configuré une seule fois pour toute l'application.
 final dioProvider = Provider<Dio>((ref) {
-  return Dio(
+  final dio = Dio(
     BaseOptions(
       baseUrl: urlApi(),
       connectTimeout: const Duration(seconds: 5),
@@ -24,4 +27,23 @@ final dioProvider = Provider<Dio>((ref) {
       contentType: Headers.jsonContentType,
     ),
   );
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      // Ajoute le jeton à chaque requête.
+      onRequest: (options, handler) async {
+        final jeton = await ref.read(sessionStorageProvider).lireJeton();
+        if (jeton != null) options.headers['Authorization'] = 'Bearer $jeton';
+        handler.next(options);
+      },
+      // 401 : jeton absent ou expiré, retour à l'écran de connexion.
+      onError: (erreur, handler) async {
+        final estLogin = erreur.requestOptions.path == '/login';
+        if (erreur.response?.statusCode == 401 && !estLogin) {
+          await ref.read(authProvider.notifier).sessionExpiree();
+        }
+        handler.next(erreur);
+      },
+    ),
+  );
+  return dio;
 });

@@ -69,7 +69,11 @@
       "id": "u1",
       "nom": "Ibrahim Sawadogo",
       "email": "ibrahim.sawadogo@campus.bf",
-      "coursIds": ["c1", "c2", "c3"]
+      "coursIds": [
+        "c1",
+        "c2",
+        "c3"
+      ]
     }
   ]
 }

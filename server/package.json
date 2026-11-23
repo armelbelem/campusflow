@@ -4,7 +4,8 @@
   "private": true,
   "description": "API REST simulée de CampusFlow (json-server) pour la séance 7.",
   "scripts": {
-    "api": "json-server --watch db.json --port 3000 --host 0.0.0.0"
+    "api": "json-server --watch db.json --port 3000 --host 0.0.0.0",
+    "api:auth": "node server.js"
   },
   "dependencies": {
     "json-server": "0.17.4"

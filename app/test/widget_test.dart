@@ -1,10 +1,13 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:campusflow_models/campusflow_models.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:campusflow/core/router.dart';
+import 'package:campusflow/core/session_storage.dart';
 import 'package:campusflow/features/accueil/titre_screen.dart';
+import 'package:campusflow/features/auth/data/auth_repository.dart';
 import 'package:campusflow/features/cours/data/api_cours_repository.dart';
 import 'package:campusflow/features/taches/data/api_task_repository.dart';
 import 'package:campusflow/features/taches/data/fake_task_repository.dart';
@@ -17,15 +20,29 @@ void telephone(WidgetTester tester) {
   addTearDown(tester.view.reset);
 }
 
+/// Session déjà ouverte (par défaut, l'utilisateur est connecté).
+MemoireSessionStorage sessionOuverte() => MemoireSessionStorage(
+  jeton: 'jeton-de-test',
+  utilisateur: User(
+    id: 'u1',
+    nom: 'Ibrahim Sawadogo',
+    email: 'ibrahim.sawadogo@campus.bf',
+    coursIds: const ['c1', 'c2', 'c3'],
+  ),
+);
+
 /// Lance l'application avec des repositories en mémoire : aucun réseau.
 Future<ProviderContainer> lancer(
   WidgetTester tester, {
   FakeTaskRepository? taches,
+  SessionStorage? session,
 }) async {
   final container = ProviderContainer(
     overrides: [
       taskRepositoryProvider.overrideWithValue(taches ?? FakeTaskRepository()),
       coursRepositoryProvider.overrideWithValue(FakeCoursRepository()),
+      authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
+      sessionStorageProvider.overrideWithValue(session ?? sessionOuverte()),
     ],
     retry: (_, _) => null,
   );
@@ -123,9 +140,51 @@ void main() {
     expect(find.text('Rapport SQL'), findsOneWidget);
     expect(find.text('Marquer comme fait'), findsOneWidget);
 
+    // Déjà connecté : /login renvoie vers les échéances.
     router.go('/login');
     await tester.pumpAndSettle();
+    expect(find.text('Se connecter'), findsNothing);
+    expect(router.state.matchedLocation, '/taches');
+  });
+
+  testWidgets('Connexion : sans session, /login, erreur, puis succès', (
+    tester,
+  ) async {
+    telephone(tester);
+    final session = MemoireSessionStorage();
+    await lancer(tester, session: session);
+
     expect(find.text('Se connecter'), findsOneWidget);
+
+    await tester.enterText(
+      find.byType(TextFormField).at(0),
+      'ibrahim.sawadogo@campus.bf',
+    );
+    await tester.enterText(find.byType(TextFormField).at(1), 'mauvais');
+    await tester.tap(find.text('Se connecter'));
+    await tester.pumpAndSettle();
+    expect(find.text('E-mail ou mot de passe incorrect.'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField).at(1), 'campus2026');
+    await tester.tap(find.text('Se connecter'));
+    await tester.pumpAndSettle();
+    expect(find.text('Rapport SQL'), findsOneWidget);
+    // Le jeton est rangé dans le stockage de session.
+    expect(session.jeton, 'jeton-de-test');
+  });
+
+  testWidgets('Déconnexion : retour à l’écran de connexion', (tester) async {
+    telephone(tester);
+    final session = sessionOuverte();
+    final container = await lancer(tester, session: session);
+
+    container.read(routerProvider).go('/profil');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Se déconnecter'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Se connecter'), findsOneWidget);
+    expect(session.jeton, isNull);
   });
 
   testWidgets('Détail : « Marquer comme fait » coche la tâche', (tester) async {

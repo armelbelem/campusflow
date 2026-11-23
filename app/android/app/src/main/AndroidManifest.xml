@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Appels à l'API (séance 7). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- usesCleartextTraffic : l'API de démonstration (json-server) est en HTTP
+         sur 10.0.2.2. À retirer avec une vraie API en HTTPS. -->
     <application
-        android:label="campusflow"
+        android:label="CampusFlow"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

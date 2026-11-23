@@ -1,52 +1,55 @@
-import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme.dart';
+import '../../auth/application/auth_notifier.dart';
 
-/// Utilisateur de démonstration : le persona de la séance 2.
-final _utilisateurDemo = User(
-  id: 'u1',
-  nom: 'Ibrahim Sawadogo',
-  email: 'ibrahim.sawadogo@campus.bf',
-  coursIds: const ['c1', 'c2', 'c3'],
-);
-
-/// Écran Profil : compte et déconnexion.
-class ProfilScreen extends StatelessWidget {
+/// Écran Profil : l'utilisateur connecté et la déconnexion.
+class ProfilScreen extends ConsumerWidget {
   const ProfilScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final u = _utilisateurDemo;
+    final u = ref.watch(authProvider).value;
     return Scaffold(
       appBar: AppBar(title: const Text('Profil')),
       body: ListView(
         padding: const EdgeInsets.all(CampusSpacing.m),
         children: [
-          Card(
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: theme.colorScheme.onPrimary,
-                child: Text(u.nom.substring(0, 1)),
+          if (u != null) ...[
+            Card(
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  child: Text(u.nom.substring(0, 1)),
+                ),
+                title: Text(u.nom),
+                subtitle: Text(u.email),
               ),
-              title: Text(u.nom),
-              subtitle: Text(u.email),
             ),
-          ),
+            const SizedBox(height: CampusSpacing.s),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.school_outlined),
+                title: const Text('Cours suivis'),
+                trailing: Text('${u.coursIds.length}'),
+              ),
+            ),
+          ],
           const SizedBox(height: CampusSpacing.s),
-          Card(
+          const Card(
             child: ListTile(
-              leading: const Icon(Icons.school_outlined),
-              title: const Text('Cours suivis'),
-              trailing: Text('${u.coursIds.length}'),
+              leading: Icon(Icons.lock_outline),
+              title: Text('Session'),
+              subtitle: Text('Jeton conservé dans le stockage chiffré'),
             ),
           ),
           const SizedBox(height: CampusSpacing.l),
           FilledButton.icon(
-            onPressed: () => context.go('/login'),
+            // Le routeur renvoie vers /login dès que la session est vide.
+            onPressed: () => ref.read(authProvider.notifier).deconnecter(),
             icon: const Icon(Icons.logout),
             label: const Text('Se déconnecter'),
           ),

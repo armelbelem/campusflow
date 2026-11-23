@@ -1,6 +1,7 @@
 import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../auth/application/auth_notifier.dart';
 import '../../cours/data/api_cours_repository.dart';
 import '../data/api_task_repository.dart';
 import '../domain/task_repository.dart';
@@ -12,8 +13,14 @@ class TachesNotifier extends AsyncNotifier<List<Task>> {
   TaskRepository get _repo => ref.read(taskRepositoryProvider);
 
   @override
-  Future<List<Task>> build() async =>
-      _trier(await ref.watch(taskRepositoryProvider).lister());
+  Future<List<Task>> build() async {
+    // Attend la session, et se recharge à chaque connexion ou déconnexion :
+    // aucune requête n'est faite sans utilisateur connecté.
+    final repo = ref.watch(taskRepositoryProvider);
+    final utilisateur = await ref.watch(authProvider.future);
+    if (utilisateur == null) return const [];
+    return _trier(await repo.lister());
+  }
 
   /// POST /taches
   Future<void> ajouter(Task tache) async {
@@ -51,6 +58,9 @@ final tachesProvider = AsyncNotifierProvider<TachesNotifier, List<Task>>(
   TachesNotifier.new,
 );
 
-final coursProvider = FutureProvider<List<Course>>(
-  (ref) => ref.watch(coursRepositoryProvider).lister(),
-);
+final coursProvider = FutureProvider<List<Course>>((ref) async {
+  final repo = ref.watch(coursRepositoryProvider);
+  final utilisateur = await ref.watch(authProvider.future);
+  if (utilisateur == null) return const [];
+  return repo.lister();
+});

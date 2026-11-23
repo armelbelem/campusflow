@@ -2,14 +2,24 @@ import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:campusflow/core/session_storage.dart';
 import 'package:campusflow/features/taches/application/taches_notifier.dart';
 import 'package:campusflow/features/taches/data/api_task_repository.dart';
 import 'package:campusflow/features/taches/data/fake_task_repository.dart';
 
-/// L'état est testé sans réseau : le repository est remplacé par le Fake.
+/// L'état est testé sans réseau : le repository est remplacé par le Fake,
+/// et un utilisateur est déjà connecté.
 ProviderContainer conteneur(FakeTaskRepository repo) {
   final c = ProviderContainer(
-    overrides: [taskRepositoryProvider.overrideWithValue(repo)],
+    overrides: [
+      taskRepositoryProvider.overrideWithValue(repo),
+      sessionStorageProvider.overrideWithValue(
+        MemoireSessionStorage(
+          jeton: 'jeton-de-test',
+          utilisateur: User(id: 'u1', nom: 'Ibrahim', email: 'i@campus.bf'),
+        ),
+      ),
+    ],
     retry: (_, _) => null,
   );
   addTearDown(c.dispose);
