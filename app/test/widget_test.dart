@@ -49,10 +49,29 @@ void main() {
     expect(find.text('En retard'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
 
-    // Cocher la tâche en retard fait disparaître le badge « En retard ».
-    await tester.tap(find.byType(Checkbox).at(1));
+    // Cocher la tâche en retard la fait sortir du filtre « À faire ».
+    await tester.tap(find.byType(Checkbox).first);
     await tester.pump();
+    expect(find.text('Rapport SQL'), findsNothing);
     expect(find.text('En retard'), findsNothing);
+  });
+
+  testWidgets('Filtres : à faire, faites, en retard', (tester) async {
+    telephone(tester);
+    await lancer(tester);
+
+    expect(find.text('À faire (4)'), findsOneWidget);
+    expect(find.text('QCM séances 1, 2 et 4'), findsNothing);
+
+    await tester.tap(find.text('Faites (1)'));
+    await tester.pumpAndSettle();
+    expect(find.text('QCM séances 1, 2 et 4'), findsOneWidget);
+    expect(find.text('Rapport SQL'), findsNothing);
+
+    await tester.tap(find.text('En retard (1)'));
+    await tester.pumpAndSettle();
+    expect(find.text('Rapport SQL'), findsOneWidget);
+    expect(find.text('TP Dart : modèles et tests'), findsNothing);
   });
 
   testWidgets('Routes : chaque écran est atteignable par son adresse', (
@@ -93,10 +112,13 @@ void main() {
     // Le détail lit l'état partagé : il se met à jour sur place.
     expect(find.text('Remettre à faire'), findsOneWidget);
 
+    // De retour sur la liste, la tâche est passée dans « Faites ».
     await tester.tap(find.byType(BackButton));
     await tester.pumpAndSettle();
-    final cases = tester.widgetList<Checkbox>(find.byType(Checkbox));
-    expect(cases.elementAt(2).value, isTrue);
+    expect(find.text('TP Dart : modèles et tests'), findsNothing);
+    await tester.tap(find.text('Faites (2)'));
+    await tester.pumpAndSettle();
+    expect(find.text('TP Dart : modèles et tests'), findsOneWidget);
   });
 
   testWidgets('Formulaire : titre obligatoire, puis ajout et SnackBar', (
