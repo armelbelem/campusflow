@@ -90,6 +90,11 @@ void main() {
 
     await tester.tap(find.text('Marquer comme fait'));
     await tester.pumpAndSettle();
+    // Le détail lit l'état partagé : il se met à jour sur place.
+    expect(find.text('Remettre à faire'), findsOneWidget);
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
     final cases = tester.widgetList<Checkbox>(find.byType(Checkbox));
     expect(cases.elementAt(2).value, isTrue);
   });

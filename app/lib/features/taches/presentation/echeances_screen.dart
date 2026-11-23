@@ -1,49 +1,33 @@
 import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../data/donnees_demo.dart';
+import '../application/taches_notifier.dart';
 import 'detail_tache_screen.dart';
 import 'widgets/liste_taches.dart';
 
-/// Écran Échéances. La liste vit encore dans l'écran (setState) : le détail
-/// et le formulaire lui renvoient leur résultat par la navigation.
-class EcheancesScreen extends StatefulWidget {
+/// Écran Échéances, branché sur l'état partagé : une tâche cochée ou ajoutée
+/// ailleurs apparaît ici immédiatement.
+class EcheancesScreen extends ConsumerStatefulWidget {
   const EcheancesScreen({super.key});
 
   @override
-  State<EcheancesScreen> createState() => _EcheancesScreenState();
+  ConsumerState<EcheancesScreen> createState() => _EcheancesScreenState();
 }
 
-class _EcheancesScreenState extends State<EcheancesScreen> {
-  var _taches = tachesDemo();
+class _EcheancesScreenState extends ConsumerState<EcheancesScreen> {
   String? _idSelectionne;
 
-  void _basculer(Task tache) {
-    setState(() {
-      _taches = [
-        for (final t in _taches)
-          t.id == tache.id ? t.copyWith(terminee: !t.terminee) : t,
-      ];
-    });
-  }
-
-  Future<void> _ouvrir(Task tache) async {
-    final fait = await context.push<bool>('/taches/${tache.id}', extra: tache);
-    if (fait ?? false) _basculer(tache);
-  }
-
-  Future<void> _nouvelleTache() async {
-    final tache = await context.push<Task>('/taches/nouvelle');
-    if (tache == null) return;
-    setState(() {
-      _taches = [..._taches, tache]
-        ..sort((a, b) => a.echeance.compareTo(b.echeance));
-    });
-  }
+  void _basculer(Task tache) =>
+      ref.read(tachesProvider.notifier).basculer(tache.id);
 
   @override
   Widget build(BuildContext context) {
+    // watch dans build : l'écran se reconstruit à chaque changement.
+    final taches = ref.watch(tachesProvider);
+    final cours = ref.watch(coursProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Échéances')),
       // Seuil de 840 dp : liste seule en dessous, liste et détail au-dessus.
@@ -51,13 +35,13 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
         builder: (context, constraints) {
           if (constraints.maxWidth < 840) {
             return ListeTaches(
-              taches: _taches,
-              cours: coursDemo,
+              taches: taches,
+              cours: cours,
               onBasculer: _basculer,
-              onOuvrir: _ouvrir,
+              onOuvrir: (t) => context.push('/taches/${t.id}'),
             );
           }
-          final selection = _taches
+          final selection = taches
               .where((t) => t.id == _idSelectionne)
               .firstOrNull;
           return Row(
@@ -65,8 +49,8 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
               Expanded(
                 flex: 2,
                 child: ListeTaches(
-                  taches: _taches,
-                  cours: coursDemo,
+                  taches: taches,
+                  cours: cours,
                   idSelectionne: _idSelectionne,
                   onBasculer: _basculer,
                   onOuvrir: (t) => setState(() => _idSelectionne = t.id),
@@ -81,10 +65,16 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
                       )
                     : DetailTacheView(
                         tache: selection,
-                        cours: coursDemo
+                        cours: cours
                             .where((c) => c.id == selection.coursId)
                             .firstOrNull,
                         onMarquerFait: () => _basculer(selection),
+                        onSupprimer: () {
+                          ref
+                              .read(tachesProvider.notifier)
+                              .supprimer(selection.id);
+                          setState(() => _idSelectionne = null);
+                        },
                       ),
               ),
             ],
@@ -92,7 +82,8 @@ class _EcheancesScreenState extends State<EcheancesScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _nouvelleTache,
+        // read dans un gestionnaire d'action, jamais watch.
+        onPressed: () => context.push('/taches/nouvelle'),
         tooltip: 'Nouvelle tâche',
         child: const Icon(Icons.add),
       ),

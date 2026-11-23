@@ -1,4 +1,3 @@
-import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/cours/presentation/cours_screen.dart';
 import '../features/profil/presentation/profil_screen.dart';
-import '../features/taches/data/donnees_demo.dart';
 import '../features/taches/presentation/detail_tache_screen.dart';
 import '../features/taches/presentation/echeances_screen.dart';
 import '../features/taches/presentation/formulaire_tache_screen.dart';
@@ -35,18 +33,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'nouvelle',
                 parentNavigatorKey: _racine,
-                builder: (_, _) => FormulaireTacheScreen(
-                  cours: coursDemo,
-                  onEnregistrer: (_) async {},
-                ),
+                builder: (_, _) => const NouvelleTachePage(),
               ),
               GoRoute(
                 path: ':id',
                 parentNavigatorKey: _racine,
-                builder: (_, state) => DetailTachePage(
-                  id: state.pathParameters['id']!,
-                  initiale: state.extra as Task?,
-                ),
+                builder: (_, state) =>
+                    DetailTachePage(id: state.pathParameters['id']!),
               ),
             ],
           ),

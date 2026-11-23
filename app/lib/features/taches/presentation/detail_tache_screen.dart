@@ -1,31 +1,43 @@
 import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/formats.dart';
 import '../../../core/theme.dart';
-import '../data/donnees_demo.dart';
+import '../application/taches_notifier.dart';
 
-/// Page de la route /taches/:id. « Marquer comme fait » renvoie `true` à
-/// l'écran précédent, qui met sa liste à jour.
-class DetailTachePage extends StatelessWidget {
-  const DetailTachePage({super.key, required this.id, this.initiale});
+/// Page de la route /taches/:id : elle lit la tâche dans l'état partagé,
+/// sans paramètre ni callback venant de la liste.
+class DetailTachePage extends ConsumerWidget {
+  const DetailTachePage({super.key, required this.id});
 
   final String id;
-  final Task? initiale;
 
   @override
-  Widget build(BuildContext context) {
-    final tache = initiale ?? tachesDemo().where((t) => t.id == id).firstOrNull;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tache = ref
+        .watch(tachesProvider)
+        .where((t) => t.id == id)
+        .firstOrNull;
     if (tache == null) {
       return Scaffold(
         appBar: AppBar(),
         body: const Center(child: Text('Tâche introuvable.')),
       );
     }
+    final cours = ref
+        .watch(coursProvider)
+        .where((c) => c.id == tache.coursId)
+        .firstOrNull;
     return DetailTacheScreen(
       tache: tache,
-      cours: coursDemo.where((c) => c.id == tache.coursId).firstOrNull,
-      onMarquerFait: () => Navigator.of(context).pop(true),
+      cours: cours,
+      onMarquerFait: () => ref.read(tachesProvider.notifier).basculer(id),
+      onSupprimer: () {
+        ref.read(tachesProvider.notifier).supprimer(id);
+        context.pop();
+      },
     );
   }
 }

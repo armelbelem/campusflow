@@ -1,8 +1,24 @@
 import 'package:campusflow_models/campusflow_models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/formats.dart';
 import '../../../core/theme.dart';
+import '../application/taches_notifier.dart';
+
+/// Page de la route /taches/nouvelle : le formulaire écrit dans l'état partagé.
+class NouvelleTachePage extends ConsumerWidget {
+  const NouvelleTachePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return FormulaireTacheScreen(
+      cours: ref.watch(coursProvider),
+      onEnregistrer: (tache) async =>
+          ref.read(tachesProvider.notifier).ajouter(tache),
+    );
+  }
+}
 
 /// Écran Nouvelle tâche : seul le titre est obligatoire.
 class FormulaireTacheScreen extends StatefulWidget {
